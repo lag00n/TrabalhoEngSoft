@@ -37,4 +37,9 @@ struct Tilemap {
 	float scale;
 };
 
+struct Camera {
+	float x, y;
+	float width, height;
+};
+
 struct PlayerControlled {};

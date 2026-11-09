@@ -132,4 +132,30 @@ void RenderTilemap(Registry& reg, SDL_Renderer* renderer) {
 		}
 	}
 }
+
+void UpdateCamera(Registry& reg) {
+	float target_x = 0.0f, target_y = 0.0f;
+	bool has_target = false;
+	for(size_t i = 0; i < reg.player_tags.size(); i++) {
+		Entity player = reg.player_tags.dense_entities[i];
+
+		if(reg.positions.has(player) && reg.sprites.has(player)) {
+			const auto& pos = reg.positions.get(player);
+			const auto& sprite = reg.sprites.get(player);
+
+			target_x = std::floor(pos.x + ((sprite.width * sprite.scale)/2.0f));
+			target_y = std::floor(pos.y + ((sprite.height * sprite.scale)/2.0f));
+			has_target = true;
+			break;
+		}
+	}
+
+	if(!has_target) return;
+	for(size_t i = 0; i < reg.cameras.size(); i++) {
+		auto& cam = reg.cameras.dense_data[i];
+
+		cam.x = target_x - (cam.width / 2.0f);
+		cam.y = target_y - (cam.height/ 2.0f);
+	}
+}
 }

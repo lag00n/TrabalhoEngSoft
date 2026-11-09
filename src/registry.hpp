@@ -12,6 +12,7 @@ public:
 	SparseSet<Animator> animators;
 	SparseSet<PlayerControlled> player_tags;
 	SparseSet<Tilemap> tilemaps;
+	SparseSet<Camera> cameras;
 
 	Entity create_entity() {
 		return next_entity++;
@@ -24,5 +25,6 @@ public:
 		animators.remove(e);
 		player_tags.remove(e);
 		tilemaps.remove(e);
+		cameras.remove(e);
 	}
 };
