@@ -8,28 +8,44 @@ void Input(Registry& reg, const bool* state) {
 	for(size_t i = 0; i < reg.player_tags.size(); i++) {
 		Entity e = reg.player_tags.dense_entities[i];
 
-		if(reg.velocities.has(e) && reg.sprites.has(e)) {
+		if(reg.velocities.has(e) && reg.sprites.has(e) && reg.animators.has(e)) {
 			auto& vel = reg.velocities.get(e);
 			auto& sprite = reg.sprites.get(e);
+			auto& anim = reg.animators.get(e);
 
 			vel.vx = 0.0f; vel.vy = 0.0f;
+			bool is_moving = false;
 
 			if(state[SDL_SCANCODE_RIGHT] || state[SDL_SCANCODE_D]) {
 				vel.vx = vel.speed;
 				sprite.facing_left = false;
+				is_moving = true;
 			}
 
 			if(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_A]) {
 				vel.vx = -vel.speed;
 				sprite.facing_left = true;
+				is_moving = true;
 			}
 
 			if(state[SDL_SCANCODE_UP] || state[SDL_SCANCODE_W]) {
 				vel.vy = -vel.speed;
+				is_moving = true;
 			}
 
 			if(state[SDL_SCANCODE_DOWN] || state[SDL_SCANCODE_S]) {
 				vel.vy = vel.speed;
+				is_moving = true;
+			}
+
+			int target_row = is_moving ? 1 : 0;
+			int target_frames = is_moving ? 8 : 6;
+
+			if(anim.anim_row != target_row) {
+				anim.anim_row = target_row;
+				anim.frames_in_row = target_frames;
+				anim.current_frame = 0;
+				anim.anim_timer = 0.0f;
 			}
 		}
 	}
@@ -66,9 +82,19 @@ void Render(Registry& reg, SDL_Renderer* renderer) {
 			const auto& sprite = reg.sprites.dense_data[i];
 			SDL_FRect dst_rect = { pos.x, pos.y, sprite.width * sprite.scale, sprite.height * sprite.scale };
 			SDL_FlipMode flip = sprite.facing_left ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-			SDL_FRect src_rect = { 0.0f, 0.0f, sprite.width, sprite.height };
 
-			SDL_RenderTextureRotated(renderer, sprite.texture, &src_rect, &dst_rect, 0.0, nullptr, flip);
+			if(reg.animators.has(e)) {
+				const auto& anim = reg.animators.get(e);
+				SDL_FRect src_rect = {
+					anim.current_frame * sprite.width,
+					anim.anim_row * sprite.height,
+					sprite.width, sprite.height
+				};
+
+				SDL_RenderTextureRotated(renderer, sprite.texture, &src_rect, &dst_rect, 0.0, nullptr, flip);
+			}	else {
+				SDL_RenderTextureRotated(renderer, sprite.texture, nullptr, &dst_rect, 0.0, nullptr, flip);
+			}
 		}
 	}
 }

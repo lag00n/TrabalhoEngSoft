@@ -40,6 +40,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 	ctx->registry.positions.insert(player, {400.0f, 300.0f});
 	ctx->registry.velocities.insert(player, {0.0f, 0.0f, 250.0f});
 	ctx->registry.sprites.insert(player, {false, 100.0f, 100.0f, 3.0f, ctx->soldier_tex});
+	ctx->registry.animators.insert(player, {0, 0, 6, 0.0f});
 	ctx->registry.player_tags.insert(player, {});
 
 	SDL_Texture* map_tex = IMG_LoadTexture(ctx->renderer, "assets/grass.png");
@@ -83,6 +84,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
 
 	Systems::Input(ctx->registry, state);
 	Systems::Movement(ctx->registry, delta_time);
+	Systems::Animation(ctx->registry, delta_time);
 
 	SDL_SetRenderDrawColor(ctx->renderer, 34, 139, 34, 255);
 	SDL_RenderClear(ctx->renderer);
