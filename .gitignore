@@ -1,3 +1,4 @@
 emsdk/
 build_native/
 build_web/
+*.png
