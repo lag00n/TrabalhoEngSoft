@@ -4,6 +4,37 @@
 
 namespace Systems {
 
+void Input(Registry& reg, const bool* state) {
+	for(size_t i = 0; i < reg.player_tags.size(); i++) {
+		Entity e = reg.player_tags.dense_entities[i];
+
+		if(reg.velocities.has(e) && reg.sprites.has(e)) {
+			auto& vel = reg.velocities.get(e);
+			auto& sprite = reg.sprites.get(e);
+
+			vel.vx = 0.0f; vel.vy = 0.0f;
+
+			if(state[SDL_SCANCODE_RIGHT] || state[SDL_SCANCODE_D]) {
+				vel.vx = vel.speed;
+				sprite.facing_left = false;
+			}
+
+			if(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_A]) {
+				vel.vx = -vel.speed;
+				sprite.facing_left = true;
+			}
+
+			if(state[SDL_SCANCODE_UP] || state[SDL_SCANCODE_W]) {
+				vel.vy = -vel.speed;
+			}
+
+			if(state[SDL_SCANCODE_DOWN] || state[SDL_SCANCODE_S]) {
+				vel.vy = vel.speed;
+			}
+		}
+	}
+}
+
 void Movement(Registry& reg, float delta_time) {
 	for(size_t i = 0; i < reg.velocities.size(); i++) {
 		Entity e = reg.velocities.dense_entities[i];
