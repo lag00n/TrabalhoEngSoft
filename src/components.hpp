@@ -20,6 +20,13 @@ struct Sprite {
 	SDL_Texture* texture;
 };
 
+struct Animator {
+	int current_frame;
+	int anim_row;
+	int frames_in_row;
+	float anim_timer;
+};
+
 struct Tilemap {
 	SDL_Texture* tileset_texture;
 	std::vector<int> layout;

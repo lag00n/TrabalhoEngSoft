@@ -9,6 +9,7 @@ public:
 	SparseSet<Position> positions;
 	SparseSet<Velocity> velocities;
 	SparseSet<Sprite> sprites;
+	SparseSet<Animator> animators;
 	SparseSet<PlayerControlled> player_tags;
 	SparseSet<Tilemap> tilemaps;
 
@@ -20,6 +21,7 @@ public:
 		positions.remove(e);
 		velocities.remove(e);
 		sprites.remove(e);
+		animators.remove(e);
 		player_tags.remove(e);
 		tilemaps.remove(e);
 	}

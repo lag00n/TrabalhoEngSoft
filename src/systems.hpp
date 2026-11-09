@@ -45,6 +45,19 @@ void Movement(Registry& reg, float delta_time) {
 	}
 }
 
+void Animation(Registry& reg, float delta_time) {
+	for(size_t i = 0; i < reg.animators.size(); i++) {
+		auto &anim = reg.animators.dense_data[i];
+		anim.anim_timer += delta_time;
+
+		if(anim.anim_timer >= 0.1f) {
+			anim.current_frame++;
+			if(anim.current_frame >= anim.frames_in_row) anim.current_frame = 0;
+			anim.anim_timer -= 0.1f;
+		}
+	}
+}
+
 void Render(Registry& reg, SDL_Renderer* renderer) {
 	for(size_t i = 0; i < reg.sprites.size(); i++) {
 		Entity e = reg.sprites.dense_entities[i];
