@@ -74,13 +74,13 @@ void Animation(Registry& reg, float delta_time) {
 	}
 }
 
-void Render(Registry& reg, SDL_Renderer* renderer) {
+void Render(Registry& reg, SDL_Renderer* renderer, const Camera& cam) {
 	for(size_t i = 0; i < reg.sprites.size(); i++) {
 		Entity e = reg.sprites.dense_entities[i];
 		if(reg.positions.has(e)) {
 			const auto& pos = reg.positions.get(e);
 			const auto& sprite = reg.sprites.dense_data[i];
-			SDL_FRect dst_rect = { pos.x, pos.y, sprite.width * sprite.scale, sprite.height * sprite.scale };
+			SDL_FRect dst_rect = { pos.x - cam.x, pos.y - cam.y, sprite.width * sprite.scale, sprite.height * sprite.scale };
 			SDL_FlipMode flip = sprite.facing_left ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
 			if(reg.animators.has(e)) {
@@ -99,7 +99,7 @@ void Render(Registry& reg, SDL_Renderer* renderer) {
 	}
 }
 
-void RenderTilemap(Registry& reg, SDL_Renderer* renderer) {
+void RenderTilemap(Registry& reg, SDL_Renderer* renderer, const Camera& cam) {
 	for(size_t i = 0; i < reg.tilemaps.size(); i++) {
 		const Entity& e = reg.tilemaps.dense_entities[i];
 		if(reg.positions.has(e)) {
@@ -120,8 +120,8 @@ void RenderTilemap(Registry& reg, SDL_Renderer* renderer) {
 					};
 
 					SDL_FRect dest_rect = {
-						pos.x + (float)(x * scaled_size),
-						pos.y + (float)(y * scaled_size),
+						(pos.x + (float)(x * scaled_size)) - cam.x,
+						(pos.y + (float)(y * scaled_size)) - cam.y,
 						scaled_size,
 						scaled_size
 					};

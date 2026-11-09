@@ -62,6 +62,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 	ctx->registry.positions.insert(map_entity, {20.0f, 20.0f});
 	ctx->registry.tilemaps.insert(map_entity, {map_tex, background_tilemap, 16, 25, 10, 8, 4.0f});
 
+	Entity main_camera = ctx->registry.create_entity();
+	ctx->registry.cameras.insert(main_camera, {0.0f, 0.0f, 800.0f, 600.0f});
+
 	*appstate = ctx;
 	return SDL_APP_CONTINUE;
 }
@@ -86,11 +89,15 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
 	Systems::Movement(ctx->registry, delta_time);
 	Systems::Animation(ctx->registry, delta_time);
 
+	Systems::UpdateCamera(ctx->registry);
+
 	SDL_SetRenderDrawColor(ctx->renderer, 34, 139, 34, 255);
 	SDL_RenderClear(ctx->renderer);
 
-	Systems::RenderTilemap(ctx->registry, ctx->renderer);
-	Systems::Render(ctx->registry, ctx->renderer);
+	const Camera& cam = ctx->registry.cameras.dense_data[0];
+
+	Systems::RenderTilemap(ctx->registry, ctx->renderer, cam);
+	Systems::Render(ctx->registry, ctx->renderer, cam);
 
 	SDL_RenderPresent(ctx->renderer);
 	return SDL_APP_CONTINUE;
