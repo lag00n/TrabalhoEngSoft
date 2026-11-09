@@ -14,3 +14,13 @@ struct Sprite {
 	float width, height, scale;
 	SDL_Texture* texture;
 };
+
+struct Tilemap {
+	SDL_Texture* tileset_texture;
+	std::vector<int> layout;
+	int tile_size;
+	int tileset_columns;
+	int map_columns;
+	int map_rows;
+	float scale;
+};

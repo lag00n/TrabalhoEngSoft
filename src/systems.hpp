@@ -18,4 +18,38 @@ void Render(Registry& reg, SDL_Renderer* renderer) {
 		}
 	}
 }
+
+void RenderTilemap(Registry& reg, SDL_Renderer* renderer) {
+	for(size_t i = 0; i < reg.tilemaps.size(); i++) {
+		const Entity& e = reg.tilemaps.dense_entities[i];
+		if(reg.positions.has(e)) {
+			const auto& map = reg.tilemaps.dense_data[i];
+			const auto& pos = reg.positions.get(e);
+			float scaled_size = map.tile_size * map.scale;
+
+			for(int y = 0; y < map.map_rows; y++) {
+				for(int x = 0; x < map.map_columns; x++) {
+					int tileid = map.layout[y * map.map_columns + x];
+					if(tileid < 0) continue;
+
+					SDL_FRect src_rect = {
+						(float)(tileid % map.tileset_columns) * map.tile_size,
+						(float)(tileid / map.tileset_columns) * map.tile_size,
+						(float) map.tile_size,
+						(float) map.tile_size
+					};
+
+					SDL_FRect dest_rect = {
+						pos.x + (float)(x * scaled_size),
+						pos.y + (float)(y * scaled_size),
+						scaled_size,
+						scaled_size
+					};
+
+					SDL_RenderTexture(renderer, map.tileset_texture, &src_rect, &dest_rect);
+				}
+			}
+		}
+	}
+}
 }

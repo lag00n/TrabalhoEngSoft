@@ -40,6 +40,25 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
 	ctx->registry.positions.insert(player, {400.0f, 300.0f});
 	ctx->registry.sprites.insert(player, {false, 100.0f, 100.0f, 3.0f, ctx->soldier_tex});
 
+	SDL_Texture* map_tex = IMG_LoadTexture(ctx->renderer, "assets/grass.png");
+	SDL_SetTextureScaleMode(map_tex, SDL_SCALEMODE_NEAREST);
+	Entity map_entity = ctx->registry.create_entity();
+
+	std::vector<int> background_tilemap = {
+		0, 0, 0, 0, 253, 254, 0, 0, 0, 0,
+		0, 1, 0, 0, 2, 2, 0, 0, 0, 0,
+		0, 0, 0, 2, 2, 2, 2, 0, 1, 0,
+		0, 0, 0, 2, 2, 2, 2, 0, 0, 0,
+		0, 0, 0, 0, 2, 2, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 180
+	};
+
+	// {texture, layout, tile_size, tileset_columns, map_columns, map_rows, scale}
+	ctx->registry.positions.insert(map_entity, {20.0f, 20.0f});
+	ctx->registry.tilemaps.insert(map_entity, {map_tex, background_tilemap, 16, 25, 10, 8, 4.0f});
+
 	*appstate = ctx;
 	return SDL_APP_CONTINUE;
 }
@@ -55,6 +74,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
 	SDL_SetRenderDrawColor(ctx->renderer, 34, 139, 34, 255);
 	SDL_RenderClear(ctx->renderer);
 
+	Systems::RenderTilemap(ctx->registry, ctx->renderer);
 	Systems::Render(ctx->registry, ctx->renderer);
 
 	SDL_RenderPresent(ctx->renderer);
