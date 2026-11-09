@@ -4,6 +4,16 @@
 
 namespace Systems {
 
+void Movement(Registry& reg, float delta_time) {
+	for(size_t i = 0; i < reg.velocities.size(); i++) {
+		Entity e = reg.velocities.dense_entities[i];
+		if(reg.positions.has(e)) {
+			reg.positions.get(e).x += reg.velocities.get(e).vx * delta_time;
+			reg.positions.get(e).y += reg.velocities.get(e).vy * delta_time;
+		}
+	}
+}
+
 void Render(Registry& reg, SDL_Renderer* renderer) {
 	for(size_t i = 0; i < reg.sprites.size(); i++) {
 		Entity e = reg.sprites.dense_entities[i];

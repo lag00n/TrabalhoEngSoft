@@ -9,6 +9,11 @@ struct Position {
 	float x, y;
 };
 
+struct Velocity {
+	float vx, vy;
+	float speed;
+};
+
 struct Sprite {
 	bool facing_left;
 	float width, height, scale;
@@ -24,3 +29,5 @@ struct Tilemap {
 	int map_rows;
 	float scale;
 };
+
+struct PlayerControlled {};
