@@ -7,6 +7,7 @@ private:
 	Entity next_entity = 0;
 public:
 	SparseSet<Position> positions;
+	SparseSet<Sprite> sprites;
 
 	Entity create_entity() {
 		return next_entity++;
@@ -14,5 +15,6 @@ public:
 
 	void destroy_entity(Entity e) {
 		positions.remove(e);
+		sprites.remove(e);
 	}
 };

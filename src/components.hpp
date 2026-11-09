@@ -8,3 +8,9 @@ using Entity = size_t;
 struct Position {
 	float x, y;
 };
+
+struct Sprite {
+	bool facing_left;
+	float width, height, scale;
+	SDL_Texture* texture;
+};
